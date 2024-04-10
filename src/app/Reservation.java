@@ -1,7 +1,6 @@
-package app.domain;
+package app;
 
 public class Reservation {
-	
 	
 	public void create_rvt() {
 		System.out.println("예약");
