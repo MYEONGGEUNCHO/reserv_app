@@ -10,7 +10,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
 
-import app.domain.User;
 
 public class Main {
 	private Scanner scanner = new Scanner(System.in);
@@ -96,9 +95,6 @@ public class Main {
 		}
 		
 		SeatType st = new SeatType();
-		Users user = new Users();
-		
-		reservation(user);
 	}
 
 	public void login() {
@@ -108,6 +104,41 @@ public class Main {
 
 	public void create_user() {
 		System.out.println("회원가입");
+		User user = new User();
+		
+		//6개 항목 입력 받기
+		System.out.print("id: ");
+		user.setId(scanner.nextLine());
+		System.out.println("pw: ");
+		user.setPw(scanner.nextLine());
+		System.out.println("username: ");
+		user.setUsername(scanner.nextLine());
+		System.out.println("address: ");
+		user.setAddress(scanner.nextLine());
+		System.out.println("tel: ");
+		user.setTel(scanner.nextLine());
+		System.out.println("email: ");
+		user.setEmail(scanner.nextLine());
+		
+		try {
+			String sql=""+
+				"INSERT INTO USERS (user_no, id, pw, username, address, tel, email) "+
+				"VALUES (user_no_seq.NEXTVAL, ?, ?, ?, ?, ?, ?)";
+			PreparedStatement pstmt=conn.prepareStatement(sql);
+			pstmt.setString(1, user.getId());
+			pstmt.setString(2, user.getPw());
+			pstmt.setString(3, user.getUsername());
+			pstmt.setString(4, user.getAddress());
+			pstmt.setString(5, user.getTel());
+			pstmt.setString(6, user.getEmail());
+			pstmt.executeUpdate();
+			pstmt.close();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			exit();
+		}
+		home();
 	}
 
 	public void read_user() {
