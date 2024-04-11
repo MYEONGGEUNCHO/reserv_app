@@ -100,6 +100,7 @@ public class Main {
 	public void login() {
 		System.out.println("로그인 성공");
 		
+//		reservation();
 	}
 
 	public void create_user() {
@@ -238,7 +239,51 @@ public class Main {
 	}
 
 	public void read_rvt(Users user) {
-		System.out.println("예약확인");
+		System.out.println("나의 예약");
+		int user_no = user.getUser_no();
+		String username = user.getUser_name();
+		System.out.print("예약자: " + username); 	
+		int bno = Integer.parseInt(scanner.nextLine());
+		
+		//boards 테이블에서 해당 게시물을 가져와 출력
+		try {
+			String sql = "" +
+				"SELECT * " +
+				"FROM reservation " +
+				"WHERE user_no=?";
+			PreparedStatement pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, user_no);
+			ResultSet rs = pstmt.executeQuery();
+			if(rs.next()) {
+				Reservation rv = new Reservation();
+				rv.setReserve_no(rs.getInt("reservation_no"));
+				rv.setUser_no(rs.getInt("user_no"));
+				rv.setType(rs.getString("type"));
+				rv.setNum(rs.getInt("num"));
+				System.out.println("#############");
+				System.out.println("예약번호: " + rv.getReserve_no());
+				System.out.println("예약자: " + username);
+				System.out.println("좌석 타입: " + rv.getType());
+				System.out.println("좌석 번호: " + rv.getNum());
+				//보조 메뉴 출력
+//				System.out.println("-------------------------------------------------------------------");
+//				System.out.println("보조 메뉴: 1.Update | 2.Delete | 3.List");
+//				System.out.print("메뉴 선택: ");
+//				String menuNo = scanner.nextLine();
+//				System.out.println();
+//				
+//				if(menuNo.equals("1")) {
+//					update(board);
+//				} else if(menuNo.equals("2")) {
+//					delete(board);
+//				}
+			}
+			rs.close();
+			pstmt.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			exit();
+		}
 	}
 
 	public void update_rvt(SeatType st, Users user) {
