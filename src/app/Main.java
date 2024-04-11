@@ -40,8 +40,8 @@ public class Main {
 					"FROM seattype ";
 			PreparedStatement pstmt = conn.prepareStatement(sql);
 			ResultSet rs = pstmt.executeQuery();
-			List<Integer> list = new ArrayList<>();
-			HashMap<String, List<Integer>> seat_list = new HashMap<>();
+			List<String> list = new ArrayList<>();
+			HashMap<String, List<String>> seat_list = new HashMap<>();
 			seat_list.put("R", new ArrayList<>());
 			seat_list.put("S", new ArrayList<>());
 			seat_list.put("A", new ArrayList<>());
@@ -53,10 +53,13 @@ public class Main {
 				String k = rs.getString("type");
 //				System.out.println(rs.getString("type"));
 				Integer v = rs.getInt("num");
-//				System.out.println(rs.getInt("num"));
-//				st.setCheck_flag(rs.getString("check_flag"));
-				
-				seat_list.get(k).add(v);
+				int flag = rs.getInt("check_flag");//			System.out.println(rs.getInt("num"));
+//				st.setCheck_flag(rs.getString("check_flag"))
+				if (flag == 0) {					
+					seat_list.get(k).add(Integer.toString(v));
+				} else {
+					seat_list.get(k).add("X");
+				}
 			}
 			rs.close();
 			pstmt.close();
