@@ -55,6 +55,7 @@ public class Main {
 				Integer v = rs.getInt("num");
 //				System.out.println(rs.getInt("num"));
 //				st.setCheck_flag(rs.getString("check_flag"));
+				
 				seat_list.get(k).add(v);
 			}
 			rs.close();
@@ -75,7 +76,7 @@ public class Main {
 			e.printStackTrace();
 			exit();
 		}
-//		login();
+		
 		home();
 	}
 	
@@ -98,9 +99,44 @@ public class Main {
 	}
 
 	public void login() {
-		System.out.println("로그인 성공");
+		//6개 항목 입력 받기
+		System.out.print("id: ");
+		String id = scanner.nextLine();
+//		String id = "user1";
+		System.out.println(id);
+		System.out.print("pw: ");
+		String pw = scanner.nextLine();
+//		String pw = "password1";
+		System.out.println(pw);
 		
-//		reservation();
+		System.out.println("로그인 성공");
+		User user = new User();
+		try {
+			String sql = "" +
+				"SELECT * " +
+				"FROM users " +
+				"WHERE id=? and pw=?";
+			PreparedStatement pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, id);
+			pstmt.setString(2, pw);
+			ResultSet rs = pstmt.executeQuery();
+			if(rs.next()) {				
+				user.setUser_no(rs.getInt("user_no"));
+				user.setId(rs.getString("id"));
+				user.setPw(rs.getString("pw"));
+				user.setUsername(rs.getString("username"));
+				user.setTel(rs.getString("tel"));
+				user.setAddress(rs.getString("address"));
+				user.setEmail(rs.getString("email"));
+			}
+			rs.close();
+			pstmt.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			exit();
+		}
+		
+		reservation(user);
 	}
 
 	public void create_user() {
@@ -158,7 +194,7 @@ public class Main {
 		System.exit(0);
 	}
 
-	public void reservation(Users user) {
+	public void reservation(User user) {
 
 		System.out.println();
 		System.out.println("-----------------------------------------------------------------------");
@@ -174,7 +210,7 @@ public class Main {
 		}
 	}
 
-	public void create_rvt(Users user) {
+	public void create_rvt(User user) {
 		Reservation rv = new Reservation();
 		System.out.println("-----------------------------------------------------------------------");
 		System.out.println("좌석종류: 1.R석 | 2.S석 | 3.A석 | 4.B석");
@@ -193,20 +229,6 @@ public class Main {
 		rv.setNum(seatNum);
 		
 		int seat_no = 0;
-//		try {
-//			String sql = "" +
-//				"select * " +
-//				"from seat_type" +
-//				"where type = ? and num = ?";
-//			PreparedStatement pstmt = conn.prepareStatement(sql);
-//			pstmt.setString(1, seatType);
-//			pstmt.setInt(2, seatNum);
-//			seat_no = pstmt.executeUpdate();
-//			pstmt.close();
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//			exit();
-//		}
 		
 		
 		//보조 메뉴 출력
@@ -233,17 +255,33 @@ public class Main {
 			}
 		}
 		
+		// 좌석상태 변경 코드
+		try {
+			SeatType st = new SeatType();
+			String sql = "" +
+				"UPDATE seattype SET check_flag=1" +
+				"WHERE type=? and num=?";
+			PreparedStatement pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, seatType);
+			pstmt.setInt(2, seatNum);
+			pstmt.executeUpdate();
+			pstmt.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			exit();
+		}
+		
+		
 		System.out.println("예약완료");
 		
 		list();
 	}
 
-	public void read_rvt(Users user) {
+	public void read_rvt(User user) {
 		System.out.println("나의 예약");
 		int user_no = user.getUser_no();
-		String username = user.getUser_name();
+		String username = user.getUsername();
 		System.out.print("예약자: " + username); 	
-		int bno = Integer.parseInt(scanner.nextLine());
 		
 		//boards 테이블에서 해당 게시물을 가져와 출력
 		try {
@@ -301,8 +339,5 @@ public class Main {
 		// presentation layer
 		Main main = new Main();
 		main.list();
-//		main.reservation();
-
 	}
-
 }
