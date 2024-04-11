@@ -80,6 +80,10 @@ public class Main {
 		home();
 	}
 	
+	public void list2() {
+		
+	}
+	
 	public void home() {
 
 		System.out.println();
@@ -101,12 +105,12 @@ public class Main {
 	public void login() {
 		//6개 항목 입력 받기
 		System.out.print("id: ");
-		String id = scanner.nextLine();
-//		String id = "user1";
+//		String id = scanner.nextLine();
+		String id = "user1";
 		System.out.println(id);
 		System.out.print("pw: ");
-		String pw = scanner.nextLine();
-//		String pw = "password1";
+//		String pw = scanner.nextLine();
+		String pw = "password1";
 		System.out.println(pw);
 		
 		System.out.println("로그인 성공");
@@ -175,6 +179,7 @@ public class Main {
 			e.printStackTrace();
 			exit();
 		}
+		
 		home();
 	}
 
@@ -281,7 +286,7 @@ public class Main {
 		System.out.println("나의 예약");
 		int user_no = user.getUser_no();
 		String username = user.getUsername();
-		System.out.print("예약자: " + username); 	
+		System.out.println("예약자: " + username); 	
 		
 		//boards 테이블에서 해당 게시물을 가져와 출력
 		try {
@@ -294,11 +299,11 @@ public class Main {
 			ResultSet rs = pstmt.executeQuery();
 			if(rs.next()) {
 				Reservation rv = new Reservation();
-				rv.setReserve_no(rs.getInt("reservation_no"));
+				rv.setReserve_no(rs.getInt("reserve_no"));
 				rv.setUser_no(rs.getInt("user_no"));
 				rv.setType(rs.getString("type"));
 				rv.setNum(rs.getInt("num"));
-				System.out.println("#############");
+				System.out.println("-------------------------------------------------------------------");
 				System.out.println("예약번호: " + rv.getReserve_no());
 				System.out.println("예약자: " + username);
 				System.out.println("좌석 타입: " + rv.getType());
@@ -322,6 +327,8 @@ public class Main {
 			e.printStackTrace();
 			exit();
 		}
+		
+		list();
 	}
 
 	public void update_rvt(SeatType st, Users user) {
